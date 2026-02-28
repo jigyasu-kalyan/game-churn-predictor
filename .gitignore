@@ -1,0 +1,13 @@
+# Virtual Environments
+venv/
+env/
+.env
+
+# Python Cache
+__pycache__/
+*.py[cod]
+
+# Datasets and Models
+*.csv
+*.pkl
+*.joblib
