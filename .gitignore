@@ -9,5 +9,4 @@ __pycache__/
 
 # Datasets and Models
 *.csv
-*.pkl
 *.joblib
