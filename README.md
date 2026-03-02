@@ -46,7 +46,7 @@ We compared a baseline Logistic Regression model against a Random Forest Classif
 ---
 
 ### How to Run Locally
-1. Clone the repo: `git clone https://github.com/jigyasu-kalyan/game-churn-predictor`
+1. Clone the repo: `git clone https://github.com/jigyasu-kalyan/game-churn-predictor.git`
 2. Install requirements: `pip install -r requirements.txt`
 3. Run the app: `streamlit run app.py`
 
