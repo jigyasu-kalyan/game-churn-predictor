@@ -30,7 +30,7 @@ class AgentState(TypedDict):
 
 # --- 3. Initialize Global Components ---
 # NOTE: Set your GROQ_API_KEY in your environment variables (.env file)
-llm = ChatGroq(model="llama3-8b-8192", temperature=0.2)
+llm = ChatGroq(model="llama-3.3-70b-versatile", temperature=0.2)
 structured_llm = llm.with_structured_output(RetentionPlan)
 rag_system = EngagementRAG()
 
