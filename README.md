@@ -1,54 +1,88 @@
-# 🎮 Project: Player Churn Prediction & Agentic Retention Strategy
+# 🎮 Agentic Player Retention Optimizer
 
-## From Predictive Analytics to Intelligent Intervention
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/release/python-3110/)
+[![LangGraph](https://img.shields.io/badge/LangGraph-Stateful_Agents-orange)](https://python.langchain.com/v0.1/docs/langgraph/)
+[![Streamlit](https://img.shields.io/badge/Streamlit-Deployed-FF4B4B)](https://game-churn-predictor.streamlit.app/)
 
-### Project Overview
-This project involves the design and implementation of an **AI-driven player analytics system** that predicts churn in gaming environments and will evolve into an agentic AI retention strategist for the final submission.
+## From Predictive Analytics to Autonomous Agentic Intervention
 
-- **Milestone 1 (Current):** Classical machine learning (Random Forest) applied to historical player behavior data to predict churn risk and identify key drivers of disengagement.
-- **Milestone 2 (Upcoming):** Extension into an agent-based AI application using LangGraph to autonomously reason about churn risk and plan intervention strategies.
+### 📖 Project Overview
+This project bridges the gap between predictive machine learning and actionable game design. Originally built as a Random Forest churn predictor, the system has evolved into an **Agentic AI Assistant**. 
+
+Instead of merely flagging players who are likely to quit, the system utilizes an autonomous LangGraph workflow to reason about the underlying causes of churn, query a specialized vector database of game design strategies (RAG), and generate a deterministic, highly structured retention plan using Llama 3.3.
 
 ---
 
-### Technology Stack (Milestone 1)
+### 🧠 System Architecture
+
+The core logic operates on a state-based **LangGraph** architecture, cleanly separating predictive ML from generative AI:
+
+1. **Prediction Node:** Parses tabular player telemetry through a pre-trained `Scikit-Learn` Random Forest pipeline to generate a churn probability.
+2. **Analysis Node:** Evaluates the risk factors mathematically (e.g., high difficulty + short sessions = progression friction).
+3. **Retrieval Node (RAG):** Uses `ChromaDB` and `HuggingFaceEmbeddings` (`all-MiniLM-L6-v2`) to perform semantic search against a custom `retention_playbook.md`, retrieving targeted game economy and engagement mechanics.
+4. **Generation Node:** A `Llama-3.3-70b-versatile` LLM (via Groq) synthesizes the data. It is constrained by **Pydantic** schema validation to guarantee a strict 5-part JSON output, eliminating hallucinations and formatting errors.
+
+---
+
+### 🛠️ Technology Stack
+
 | Component | Technology |
 | :--- | :--- |
-| **ML Models** | Random Forest, Logistic Regression, Scikit-Learn |
-| **Data Processing** | Pandas, NumPy, StandardScaler, OneHotEncoder |
-| **UI Framework** | Streamlit |
-| **Environment** | Python 3.11+, Virtualenv |
+| **Agent Framework** | LangGraph, LangChain, Pydantic |
+| **Large Language Model** | Llama 3.3 70B (via Groq API) |
+| **RAG & Vector DB** | ChromaDB, HuggingFace (`all-MiniLM-L6-v2`) |
+| **Predictive ML** | Scikit-Learn (Random Forest: 93.9% Acc), Pandas |
+| **Frontend UI** | Streamlit |
 
 ---
 
-### Milestone 1 Deliverables (Mid-Sem)
+### 🌟 Key Features
+* **Modular Codebase:** Clean separation of concerns (`core/agents`, `core/rag`, `core/models`) designed for scalability and isolated testing.
+* **Intelligent Chunking:** Uses `MarkdownHeaderTextSplitter` to ensure retrieved strategies maintain their target profile context.
+* **Deterministic Structured Output:** Forces the LLM to output specific fields (Summary, Analysis, Plan, References, Disclaimer) for direct UI integration.
+* **Graceful Degradation:** Built-in fallback logic ensures the Streamlit UI safely serves a standard retention strategy even if the LLM API times out.
 
-#### 1. Problem Understanding & Business Context
-**Objective:** Identify players at risk of leaving the game using behavioral data (PlayTime, Sessions, Purchases). 
-**Context:** High churn rates directly impact game revenue. By predicting "Low Engagement" players early, developers can trigger retention rewards or difficulty adjustments to keep the player base active.
+---
 
-#### 2. System Architecture
-The system utilizes a **Scikit-Learn Pipeline** for seamless data flow:
-1. **Input:** Raw player metrics via Streamlit UI.
-2. **Preprocessing:** Automated scaling of numbers and encoding of categories.
-3. **Inference:** A saved Random Forest model (`.pkl`) generates a probability score.
-4. **Output:** Real-time risk classification and probability display.
+### 📂 Directory Structure
 
-#### 3. Model Performance Evaluation
-We compared a baseline Logistic Regression model against a Random Forest Classifier.
-
-| Metric | Logistic Regression | Random Forest (Final) |
-| :--- | :--- | :--- |
-| **Accuracy** | 82.4% | **93.9%** |
-| **Precision** | 61.9% | **90.8%** |
-| **Recall** | 85.0% | **85.3%** |
-| **AUC Score** | 0.832 | **0.911%** |
+```text
+game-churn-predictor/
+├── core/                       # Main application package
+│   ├── agents/                 # LangGraph Agent logic
+│   │   ├── __init__.py
+│   │   ├── nodes.py            # Individual node functions
+│   │   ├── prompts.py          # AI system prompts
+│   │   └── workflow.py         # Graph definition & compilation
+│   ├── models/                 # ML Prediction logic
+│   │   ├── __init__.py
+│   │   └── predictor.py        # Random Forest inference
+│   ├── rag/                    # Retrieval-Augmented Generation
+│   │   ├── __init__.py
+│   │   ├── embedding.py        # HuggingFace model factory
+│   │   ├── loader.py           # Playbook document loader
+│   │   └── retriever.py        # ChromaDB search interface
+│   ├── utils/                  
+│   │   └── logger.py           # Centralized logging setup
+│   └── config.py               # Environment configuration
+├── app.py                      # Streamlit UI (Entry Point)
+├── churn_model.pkl             # Serialized Random Forest model
+├── retention_playbook.md       # Knowledge base for RAG
+├── player_data.csv             # Raw telemetry dataset
+└── requirements.txt            # Project dependencies
 
 ---
 
 ### How to Run Locally
 1. Clone the repo: `git clone https://github.com/jigyasu-kalyan/game-churn-predictor.git`
-2. Install requirements: `pip install -r requirements.txt`
-3. Run the app: `streamlit run app.py`
+2. Set up a virtual environment:
+`
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+`
+3. Configure environment variable: `GROQ_API_KEY="gsk_your_api_key_here"`
+4. Run the app: `streamlit run app.py`
 
 ### 🌐 Live Deployment
 **Hosted Link:** https://game-churn-predictor.streamlit.app/
